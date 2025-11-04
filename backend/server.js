@@ -6,6 +6,9 @@ import cors from 'cors'
 // Internal imports
 import { startServer } from './src/utils/serverStart.js'
 
+// Internal routes
+import userRoutes from './src/routes/userRoutes.js'
+
 // Load environment variables
 dotenv.config()
 
@@ -13,6 +16,9 @@ dotenv.config()
 const app = express()
 app.use(cors())
 app.use(express.json())
+
+// Added routes to express
+app.use('/', userRoutes)
 
 // Inject global variables and start the server
 const PORT = process.env.PORT || 3000

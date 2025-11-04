@@ -1,4 +1,3 @@
-// models/productModel.js
 import mongoose from 'mongoose'
 
 // Define the schema for the price history of a product
