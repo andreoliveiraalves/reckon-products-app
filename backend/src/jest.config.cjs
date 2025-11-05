@@ -1,5 +1,6 @@
 export default {
-    testEnvironment: 'node',
-    extensionsToTreatAsEsm: ['.js'],
-    transform: {}
+    testEnvironment: "node",
+    collectCoverage: true,
+    coverageProvider: "v8",
+    extensionsToTreatAsEsm: [".js"]
 }

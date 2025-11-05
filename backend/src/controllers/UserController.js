@@ -84,11 +84,15 @@ export const loginUser = async (req, res) => {
 
 // ------------------ USER LOGOUT ------------------
 // Clears the token cookie
-export const logoutUser = (req, res) => {
-    res.clearCookie('token', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Strict'
-    })
-    res.status(200).json({ message: 'Logout successful' })
-}
+export const logoutUser = async (req, res) => {
+    try {
+        await res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict'
+        });
+        res.status(200).json({ message: 'Logout successful' });
+    } catch (err) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};

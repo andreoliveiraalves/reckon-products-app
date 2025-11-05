@@ -1,50 +1,49 @@
 import mongoose from 'mongoose'
 
-// Define the schema for the price history of a product
 const priceHistorySchema = new mongoose.Schema({
-    price: {
-        type: Number,
-        required: true,
-        min: [0, 'Price must be positive']
-    },
-    date: {
-        type: Date,
-        default: Date.now
-    }
+    price: { type: Number, required: true },
+    updatedBy: { type: String, default: 'Unknown' },
+    date: { type: Date, default: Date.now }
 })
 
-// Define the main product schema
-const productSchema = new mongoose.Schema(
-    {
-        name: {
-            type: String,
-            required: [true, 'Product name is required'],
-            trim: true
-        },
-        description: {
-            type: String,
-            required: [true, 'Product description is required'],
-            trim: true
-        },
-        price: {
-            type: Number,
-            required: [true, 'Product price is required'],
-            min: [0, 'Price must be a positive number']
-        },
-        priceHistory: [priceHistorySchema]
-    },
-    {
-        timestamps: true // adds createdAt and updatedAt automatically
-    }
-)
+const productSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    price: { type: Number, required: true },
+    priceHistory: { type: [priceHistorySchema], default: [] },
+    _createdBy: { type: String, default: 'Unknown' },
+    _updatedBy: { type: String }
+}, { timestamps: true })
 
-// Create a pre-save hook to track price changes
+// --------------------
+// Pre-save hook
+// --------------------
 productSchema.pre('save', function (next) {
-    if (this.isModified('price')) {
-        this.priceHistory.push({ price: this.price })
+    const fallbackUpdatedBy = this._updatedBy || 'Unknown'
+
+    // Only initialize priceHistory if it's truly empty (no initial entry)
+    if (!Array.isArray(this.priceHistory) || this.priceHistory.length === 0) {
+        this.priceHistory = [{
+            price: this.price,
+            updatedBy: this._createdBy || 'Unknown',
+            date: new Date()
+        }]
+        return next() // skip further checks
     }
+
+    // Add new priceHistory entry if price changed
+    if (this.isModified('price')) {
+        const lastPrice = this.priceHistory[this.priceHistory.length - 1]?.price
+        if (lastPrice !== this.price) {
+            this.priceHistory.push({
+                price: this.price,
+                updatedBy: fallbackUpdatedBy,
+                date: new Date()
+            })
+        }
+    }
+
     next()
 })
 
-// Create and export the model
 export const Product = mongoose.model('Product', productSchema)
