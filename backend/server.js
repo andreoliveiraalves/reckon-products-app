@@ -2,12 +2,14 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 // Internal imports
 import { startServer } from './src/utils/serverStart.js'
 
 // Internal routes
 import userRoutes from './src/routes/userRoutes.js'
+import productRoutes from './src/routes/productRoutes.js'
 
 // Load environment variables
 dotenv.config()
@@ -16,9 +18,11 @@ dotenv.config()
 const app = express()
 app.use(cors())
 app.use(express.json())
+app.use(cookieParser())
 
 // Added routes to express
-app.use('/', userRoutes)
+app.use('/auth', userRoutes)
+app.use('/products', productRoutes)
 
 // Inject global variables and start the server
 const PORT = process.env.PORT || 3000

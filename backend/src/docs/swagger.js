@@ -15,7 +15,17 @@ const options = {
             {
                 url: 'http://localhost:3000/api'
             }
-        ]
+        ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: "http",
+                    scheme: "bearer",
+                    bearerFormat: "JWT"
+                }
+            }
+        },
+        security: []
     },
     // Path to the route files where Swagger will look for docs
     apis: ['./src/routes/*.js']
