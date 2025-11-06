@@ -26,9 +26,8 @@ export const startServer = async (app, PORT, MONGO_URI) => {
 
         // Start the Express server and listen on the provided port
         app.listen(PORT, () => {
-            console.log(`🚀 Server running on port http://localhost:${PORT}/`)
-            console.log(`📘 Swagger UI available at http://localhost:${PORT}/api-docs`)
-            console.log(`📦 Postman collection at http://localhost:${PORT}/postman_collection.json`)
+            console.log(`🚀 Server running on https://reckon-products-app.onrender.com/`)
+            console.log(`📘 Swagger UI available at https://reckon-products-app.onrender.com/api-docs/`)
         })
     } catch (err) {
         // Handle MongoDB connection or startup errors
