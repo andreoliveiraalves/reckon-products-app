@@ -1,63 +1,63 @@
-    <template>
-        <div class="card">
-            <h1>🚀 Reckon Products</h1>
-            <p>Inicia sessão para aceder à gestão de produtos e histórico de preços.</p>
+<template>
+    <div class="card">
+        <h1>🚀 Reckon Products</h1>
+        <p>Log in to access product management and price history.</p>
 
-            <form @submit.prevent="handleLogin" class="form">
-                <input v-model="username" type="text" placeholder="Nome de utilizador" required />
-                <input v-model="password" type="password" placeholder="Palavra-passe" required />
+        <form @submit.prevent="handleLogin" class="form">
+            <input v-model="username" type="text" placeholder="Username" required />
+            <input v-model="password" type="password" placeholder="Password" required />
 
-                <button type="submit" :disabled="loading">
-                    {{ loading ? 'A autenticar...' : 'Iniciar Sessão' }}
-                </button>
+            <button type="submit" :disabled="loading">
+                {{ loading ? 'Logging in...' : 'Log In' }}
+            </button>
 
-                <hr class="divider" />
+            <hr class="divider" />
 
-                <button type="button" class="register-btn" @click="goToRegister">
-                    Criar Conta
-                </button>
+            <button type="button" class="register-btn" @click="goToRegister">
+                Create Account
+            </button>
 
-                <p v-if="error" class="error">{{ error }}</p>
-            </form>
-        </div>
-    </template>
+            <p v-if="error" class="error">{{ error }}</p>
+        </form>
+    </div>
+</template>
 
-    <script>
-    import axios from 'axios'
+<script>
+import axios from 'axios'
 
-    export default {
-        name: 'LoginVue',
-        data() {
-            return {
-                username: '',
-                password: '',
-                loading: false,
-                error: ''
+export default {
+    name: 'LoginVue',
+    data() {
+        return {
+            username: '',
+            password: '',
+            loading: false,
+            error: ''
+        }
+    },
+    methods: {
+        async handleLogin() {
+            this.error = ''
+            this.loading = true
+            try {
+                await axios.post(
+                    'https://reckon-products-app.onrender.com/auth/login',
+                    { username: this.username, password: this.password },
+                    { withCredentials: true } // sends cookie automatically
+                )
+                this.$router.push('/dashboard')
+            } catch (err) {
+                this.error = err.response?.data?.message || 'Login failed. Please try again.'
+            } finally {
+                this.loading = false
             }
         },
-        methods: {
-            async handleLogin() {
-                this.error = ''
-                this.loading = true
-                try {
-                    await axios.post(
-                        'https://reckon-products-app.onrender.com/auth/login',
-                        { username: this.username, password: this.password },
-                        { withCredentials: true }
-                    )
-                    this.$router.push('/dashboard')
-                } catch (err) {
-                    this.error = err.response?.data?.message || 'Erro ao autenticar. Tente novamente.'
-                } finally {
-                    this.loading = false
-                }
-            },
-            goToRegister() {
-                this.$router.push('/register')
-            }
+        goToRegister() {
+            this.$router.push('/register')
         }
     }
-    </script>
+}
+</script>
 
     <style scoped>
     .card {
