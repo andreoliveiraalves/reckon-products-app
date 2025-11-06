@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs'
 import { User } from '../models/userModel.js'
 import { generateToken } from '../utils/generateJwtToken.js'
 import { registerSchema, loginSchema } from '../validators/userSchema.js'

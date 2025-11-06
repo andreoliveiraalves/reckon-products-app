@@ -5,11 +5,11 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 
 // Internal imports
-import { startServer } from './src/utils/serverStart.js'
+import { startServer } from './utils/serverStart.js'
 
 // Internal routes
-import userRoutes from './src/routes/userRoutes.js'
-import productRoutes from './src/routes/productRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+import productRoutes from './routes/productRoutes.js'
 
 // Load environment variables
 dotenv.config()
