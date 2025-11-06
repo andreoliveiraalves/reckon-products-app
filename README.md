@@ -48,7 +48,7 @@ backend/
 O backend está alojado em **Render** e pode ser acedido aqui:
 
 🔗 [https://reckon-products-app.onrender.com](https://reckon-products-app.onrender.com)  
-📘 Documentação Swagger: [https://reckon-products-app.onrender.com/api/docs](https://reckon-products-app.onrender.com/api-docs)
+📘 Documentação Swagger: [https://reckon-products-app.onrender.com/api-docs](https://reckon-products-app.onrender.com/api-docs)
 
 ---
 
