@@ -48,7 +48,7 @@ backend/
 O backend está alojado em **Render** e pode ser acedido aqui:
 
 🔗 [https://reckon-products-app.onrender.com](https://reckon-products-app.onrender.com)  
-📘 Documentação Swagger: [https://reckon-products-app.onrender.com/api/docs](https://reckon-products-app.onrender.com/api/docs)
+📘 Documentação Swagger: [https://reckon-products-app.onrender.com/api/docs](https://reckon-products-app.onrender.com/api-docs)
 
 ---
 
@@ -62,7 +62,6 @@ O backend está alojado em **Render** e pode ser acedido aqui:
 | `POST`   | `/products`       | Criar novo produto               |
 | `PUT`    | `/products/:id`   | Atualizar produto existente      |
 | `DELETE` | `/products/:id`   | Eliminar produto                 |
-| `GET`    | `/api-docs`       | Aceder à documentação Swagger    |
 
 Endpoints protegidos requerem **autenticação via JWT**.
 
