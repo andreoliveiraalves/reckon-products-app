@@ -63,7 +63,7 @@ export const loginUser = async (req, res) => {
 
         // Set token as HttpOnly cookie
         res.cookie('token', token, {
-            httpOnly: true,
+            httpOnly: false,
             secure: false,       
             sameSite: 'None',    
             maxAge: 7 * 24 * 60 * 60 * 1000
