@@ -24,12 +24,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/auth/register",
-							"protocol": "http",
+							"raw": "{{domain}}/auth/register",
 							"host": [
-								"localhost"
+								"{{domain}}"
 							],
-							"port": "3000",
 							"path": [
 								"auth",
 								"register"
@@ -53,15 +51,46 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/auth/login",
-							"protocol": "http",
+							"raw": "{{domain}}/auth/login",
 							"host": [
-								"localhost"
+								"{{domain}}"
 							],
-							"port": "3000",
 							"path": [
 								"auth",
 								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Validate",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"testuser\",\r\n  \"password\": \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/auth/validate?Cookie=token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MGE5MWY1MzE2MmVmN2NlN2NlNWM5ZSIsImlhdCI6MTc2MjUzNDQwOSwiZXhwIjoxNzYzMTM5MjA5fQ.NRex-5VzcXGwpoKjRCUyNgFxKskroJhRuIIKq4j4bUc",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"auth",
+								"validate"
+							],
+							"query": [
+								{
+									"key": "Cookie",
+									"value": "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MGE5MWY1MzE2MmVmN2NlN2NlNWM5ZSIsImlhdCI6MTc2MjUzNDQwOSwiZXhwIjoxNzYzMTM5MjA5fQ.NRex-5VzcXGwpoKjRCUyNgFxKskroJhRuIIKq4j4bUc"
+								}
 							]
 						}
 					},
@@ -82,12 +111,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/auth/logout",
-							"protocol": "http",
+							"raw": "{{domain}}/auth/logout",
 							"host": [
-								"localhost"
+								"{{domain}}"
 							],
-							"port": "3000",
 							"path": [
 								"auth",
 								"logout"
@@ -116,12 +143,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/products/",
-							"protocol": "http",
+							"raw": "{{domain}}/products/",
 							"host": [
-								"localhost"
+								"{{domain}}"
 							],
-							"port": "3000",
 							"path": [
 								"products",
 								""
@@ -145,12 +170,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/products/test/generate",
-							"protocol": "http",
+							"raw": "{{domain}}/products/test/generate",
 							"host": [
-								"localhost"
+								"{{domain}}"
 							],
-							"port": "3000",
 							"path": [
 								"products",
 								"test",
@@ -175,12 +198,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/products/test/clear",
-							"protocol": "http",
+							"raw": "{{domain}}/products/test/clear",
 							"host": [
-								"localhost"
+								"{{domain}}"
 							],
-							"port": "3000",
 							"path": [
 								"products",
 								"test",
@@ -208,9 +229,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/?page={{page}}&limit={{limit}}&minPrice={{minPrice}}&maxPrice={{maxPrice}}&name={{name}}&description={{description}}&price={{price}}&sortBy={{sortBy}}&sortOrder={{sortOrder}}",
+							"raw": "{{domain}}/?page={{page}}&limit={{limit}}&minPrice={{minPrice}}&maxPrice={{maxPrice}}&name={{name}}&description={{description}}&price={{price}}&sortBy={{sortBy}}&sortOrder={{sortOrder}}",
 							"host": [
-								"{{host}}"
+								"{{domain}}"
 							],
 							"path": [
 								""
@@ -272,12 +293,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/products/690bde2513283a2cfcf59e26",
-							"protocol": "http",
+							"raw": "{{domain}}/products/690bde2513283a2cfcf59e26",
 							"host": [
-								"localhost"
+								"{{domain}}"
 							],
-							"port": "3000",
 							"path": [
 								"products",
 								"690bde2513283a2cfcf59e26"
@@ -301,12 +320,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/products/690bde2513283a2cfcf59e26",
-							"protocol": "http",
+							"raw": "{{domain}}/products/690bde2513283a2cfcf59e26",
 							"host": [
-								"localhost"
+								"{{domain}}"
 							],
-							"port": "3000",
 							"path": [
 								"products",
 								"690bde2513283a2cfcf59e26"
@@ -316,6 +333,28 @@
 					"response": []
 				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"variable": [
@@ -347,6 +386,11 @@
 		{
 			"key": "limit",
 			"value": "10",
+			"type": "string"
+		},
+		{
+			"key": "domain",
+			"value": "https://reckon-products-app.onrender.com",
 			"type": "string"
 		}
 	]

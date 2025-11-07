@@ -45,7 +45,7 @@ export default {
                 await axios.post(
                     'https://reckon-products-app.onrender.com/auth/login',
                     { username: this.username, password: this.password },
-                    { withCredentials: true } // Sends cookie automatically
+                    { withCredentials: true }
                 )
                 this.$router.push('/dashboard')
             } catch (err) {

@@ -1,5 +1,5 @@
 import express from 'express'
-import { registerUser, loginUser, logoutUser } from '../controllers/userController.js'
+import { registerUser, loginUser, logoutUser, validateUser } from '../controllers/userController.js'
 
 const router = express.Router()
 
@@ -90,5 +90,30 @@ router.post('/login', loginUser)
  *         description: User not logged in
  */
 router.post('/logout', logoutUser)
+
+/**
+ * @swagger
+ * /auth/validate:
+ *   get:
+ *     summary: Validate the authentication token stored in cookies
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: Returns whether the user is authenticated or not
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 authenticated:
+ *                   type: boolean
+ *                   description: True if token is valid
+ *                 userId:
+ *                   type: string
+ *                   description: User ID extracted from token (if valid)
+ *       401:
+ *         description: Token is invalid or missing
+ */
+router.post('/validate', validateUser)
 
 export default router

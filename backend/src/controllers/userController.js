@@ -63,9 +63,9 @@ export const loginUser = async (req, res) => {
 
         // Set token as HttpOnly cookie
         res.cookie('token', token, {
-            httpOnly: false,
-            secure: false,       
-            sameSite: 'None',    
+            httpOnly: true,
+            secure: false,
+            sameSite: 'None',
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
@@ -95,3 +95,16 @@ export const logoutUser = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+// ------------------ VALIDATES USER  ------------------
+export const validateUser = ('/validate', (req, res) => {
+    const token = req.cookies.token
+    if (!token) return res.json({ authenticated: false })
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        res.json({ authenticated: true, userId: decoded.id })
+    } catch {
+        res.json({ authenticated: false })
+    }
+})
