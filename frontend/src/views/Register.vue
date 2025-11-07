@@ -1,14 +1,8 @@
 <template>
-    <div>
-        Register
-    </div>
+    <AuthForm mode="register" />
 </template>
 
 <script>
-export default {
-
-}
+import AuthForm from '../components/AuthForm.vue'
+export default { components: { AuthForm } }
 </script>
-
-<style>
-</style>

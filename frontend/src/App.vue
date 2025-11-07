@@ -14,6 +14,11 @@
     --sec:  #0b72a1;
     --accent: #38bdf8;
     --text: #f1f5f9;
+    --input: #334155;
+    --input-focus: #475569;
+    --divider: #94a3b8;
+    --error: #f87171;
+    --sucess: #4ade80;
 }
 
 html,
@@ -24,16 +29,22 @@ body {
   height: 100vh;
   overflow: hidden;
   background: var(--bg);
-  color: #f1f5f9;
+  color: var(--text);
   font-family: 'Roboto', sans-serif;
 }
 
 #app {
-  width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
+@media (max-width: 600px) {
+  #app{
+    padding: 2vw;
+  }
+}
+
 
 </style>

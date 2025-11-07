@@ -11,7 +11,7 @@ const routes = [
     { path: '/register', name: 'Register', component: RegisterView },
     { path: '/dashboard', name: 'Dashboard', component: DashboardView },
 
-    //falback guard to match any invalid path
+    // Fallback for invalid routes
     { path: '/:pathMatch(.*)*', redirect: '/login' }
 ]
 
@@ -21,35 +21,44 @@ const router = createRouter({
 })
 
 // ------------------ ROUTER GUARD ------------------
-// This ensures the backend confirms if the JWT in the cookie is valid.
+// Controls access based on authentication status
 router.beforeEach(async (to, from, next) => {
-    // Only check authentication for protected routes
     const publicPages = ['Login', 'Register']
     const authRequired = !publicPages.includes(to.name)
 
-    if (!authRequired) {
-        // For public routes, proceed immediately
-        return next()
+    const isAuthenticated = sessionStorage.getItem('auth') === 'true'
+    const token = localStorage.getItem('token')
+
+    // ✅ If user tries to access Login/Register but is already authenticated → redirect to dashboard
+    if (isAuthenticated && publicPages.includes(to.name)) {
+        return next({ name: 'Dashboard' })
     }
 
+    // If page doesn't require auth → allow
+    if (!authRequired) return next()
+
+    // If we already know user is authenticated → allow
+    if (isAuthenticated) return next()
+
+    // Otherwise, validate with backend
     try {
-        // Ask backend if user is authenticated
         const response = await fetch('https://reckon-products-app.onrender.com/auth/validate', {
             method: 'GET',
-            credentials: 'include' // send cookies with request
+            headers: { Authorization: `Bearer ${token}` }
         })
 
         const data = await response.json()
 
         if (data.authenticated) {
-            // User is authenticated, continue to dashboard or other protected page
+            sessionStorage.setItem('auth', 'true')
             return next()
         } else {
-            // Token invalid or missing — redirect to login
+            sessionStorage.removeItem('auth')
             return next({ name: 'Login' })
         }
-    } catch (error) {
-        console.error('Auth check failed:', error)
+    } catch (err) {
+        console.error('Auth check failed:', err)
+        sessionStorage.removeItem('auth')
         return next({ name: 'Login' })
     }
 })
