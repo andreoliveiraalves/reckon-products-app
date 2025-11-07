@@ -103,6 +103,7 @@ export const deleteProduct = async (req, res) => {
         res.status(500).json({ message: 'Server error' })
     }
 }
+
 // ------------------ LIST PRODUCTS ------------------
 export const listProducts = async (req, res) => {
 

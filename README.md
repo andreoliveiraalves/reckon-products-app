@@ -60,7 +60,7 @@ O backend está alojado em **Render** e pode ser acedido aqui:
 | `POST`   | `/auth/register`  | Registar novo utilizador         |
 | `POST`   | `/auth/login`     | Iniciar sessão e gerar token JWT |
 | `POST`   | `/auth/logout`    | Remover cookie com token JWT     |
-| `POST`   | `/auth/validate`  | Valida sessão                    |
+| `GET`   | `/auth/validate`  | Valida sessão do utilizador       |
 | `GET`    | `/products`       | Listar todos os produtos         |
 | `POST`   | `/products`       | Criar novo produto               |
 | `PUT`    | `/products/:id`   | Atualizar produto existente      |

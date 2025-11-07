@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Cookies from 'js-cookie'
 
 // Dynamic imports for code-splitting
 const LoginView = () => import('../views/Login.vue')
@@ -7,30 +6,13 @@ const RegisterView = () => import('../views/Register.vue')
 const DashboardView = () => import('../views/Dashboard.vue')
 
 const routes = [
-    {
-        path: '/',
-        redirect: '/login' // Redirect root path to login
-    },
-    {
-        path: '/login',
-        name: 'Login',
-        component: LoginView
-    },
-    {
-        path: '/register',
-        name: 'Register',
-        component: RegisterView
-    },
-    {
-        path: '/dashboard',
-        name: 'Dashboard',
-        component: DashboardView
-    },
-    {
-        // Optional: catch-all route for unknown URLs
-        path: '/:pathMatch(.*)*',
-        redirect: '/login'
-    }
+    { path: '/', redirect: '/login' },
+    { path: '/login', name: 'Login', component: LoginView },
+    { path: '/register', name: 'Register', component: RegisterView },
+    { path: '/dashboard', name: 'Dashboard', component: DashboardView },
+
+    //falback guard to match any invalid path
+    { path: '/:pathMatch(.*)*', redirect: '/login' }
 ]
 
 const router = createRouter({
@@ -39,24 +21,37 @@ const router = createRouter({
 })
 
 // ------------------ ROUTER GUARD ------------------
-// This guard checks authentication state based on the cookie.
-// It blocks unauthorized access to protected routes and prevents
-// logged-in users from accessing login/register pages.
-router.beforeEach((to, from, next) => {
-    const token = Cookies.get('token')
+// This ensures the backend confirms if the JWT in the cookie is valid.
+router.beforeEach(async (to, from, next) => {
+    // Only check authentication for protected routes
+    const publicPages = ['Login', 'Register']
+    const authRequired = !publicPages.includes(to.name)
 
-    // Block access to any route other than login/register if no token exists
-    if (!token && to.name !== 'Login' && to.name !== 'Register') {
+    if (!authRequired) {
+        // For public routes, proceed immediately
+        return next()
+    }
+
+    try {
+        // Ask backend if user is authenticated
+        const response = await fetch('https://reckon-products-app.onrender.com/auth/validate', {
+            method: 'GET',
+            credentials: 'include' // send cookies with request
+        })
+
+        const data = await response.json()
+
+        if (data.authenticated) {
+            // User is authenticated, continue to dashboard or other protected page
+            return next()
+        } else {
+            // Token invalid or missing — redirect to login
+            return next({ name: 'Login' })
+        }
+    } catch (error) {
+        console.error('Auth check failed:', error)
         return next({ name: 'Login' })
     }
-
-    // Prevent logged-in users from going back to login/register
-    if (token && (to.name === 'Login' || to.name === 'Register')) {
-        return next({ name: 'Dashboard' })
-    }
-
-    // Proceed to route
-    next()
 })
 
 export default router

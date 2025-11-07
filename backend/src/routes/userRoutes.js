@@ -114,6 +114,6 @@ router.post('/logout', logoutUser)
  *       401:
  *         description: Token is invalid or missing
  */
-router.post('/validate', validateUser)
+router.get('/validate', validateUser)
 
 export default router

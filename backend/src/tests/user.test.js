@@ -138,12 +138,50 @@ describe('User model', () => {
     })
 })
 
+// ------------------ VALIDATE ------------------
+describe('GET /auth/validate', () => {
+    it('returns authenticated: false if no token cookie is present', async () => {
+        const res = await request(app).get('/auth/validate')
+        expect(res.statusCode).toBe(200)
+        expect(res.body.authenticated).toBe(false)
+    })
+
+    it('returns authenticated: true if token is valid', async () => {
+        const user = new User({ username: 'valuser', password: 'password123' })
+        await user.save()
+
+        const loginRes = await request(app)
+            .post('/auth/login')
+            .send({ username: 'valuser', password: 'password123' })
+
+        const cookie = loginRes.headers['set-cookie'][0]
+
+        const res = await request(app)
+            .get('/auth/validate')
+            .set('Cookie', cookie)
+
+        expect(res.statusCode).toBe(200)
+        expect(res.body.authenticated).toBe(true)
+        expect(res.body.userId).toBeDefined()
+    })
+
+    it('returns authenticated: false if token is invalid', async () => {
+        const fakeCookie = 'token=invalid.token.value'
+        const res = await request(app)
+            .get('/auth/validate')
+            .set('Cookie', fakeCookie)
+
+        expect(res.statusCode).toBe(200)
+        expect(res.body.authenticated).toBe(false)
+    })
+})
+
 // ------------------ JOI VALIDATION ------------------
 describe('Joi validation', () => {
     it('register input fails validation', async () => {
         const res = await request(app).post('/auth/register').send({
-            username: '',        
-            password: '123'       
+            username: '',
+            password: '123'
         })
         expect(res.statusCode).toBe(422)
         expect(res.body.errors.length).toBeGreaterThan(0)
