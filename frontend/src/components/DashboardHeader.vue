@@ -1,23 +1,39 @@
 <template>
-    <header class="dashboard-header">
+    <header class="dashboard-header" role="banner">
         <div class="heading-container">
-        <h2><span>🚀</span> Reckon Products Dashboard</h2>
+        <h2 id="dashboard-title">
+            <span aria-hidden="true">🚀</span> Products Dashboard
+        </h2>
         </div>
-        <div class="button-container">
-            <button class="admin-btn" @click="$emit('displayAdminSettings')" aria-label="Sign out">
-                🛠️ Admin
+        <nav class="button-container" aria-label="User actions">
+            <button
+                class="admin-btn"
+                :class="showAdminButtons ? 'active' : ''"
+                type="button"
+                @click="$emit('displayAdminSettings')"
+                aria-pressed="false"
+                aria-label="Toggle admin controls"
+            >
+                <span aria-hidden="true">🛠️</span> <span class="sr-only">Admin settings</span>
             </button>
-            <button class="signout-btn" @click="$emit('signOut')" aria-label="Sign out">
-                🔓 Logout
+
+            <button
+                class="signout-btn"
+                type="button"
+                @click="$emit('signOut')"
+                aria-label="Sign out"
+            >
+                <span aria-hidden="true">🔓</span> <span class="sr-only">Logout</span>
             </button>
-        </div>
+        </nav>
     </header>
 </template>
 
 <script>
 export default {
     name: 'DashboardHeader',
-    emits: ['signOut', 'displayAdminSettings']
+    emits: ['signOut', 'displayAdminSettings'],
+    props: ['showAdminButtons']
 }
 </script>
 
@@ -32,7 +48,6 @@ export default {
     top: 0;
     z-index: 10;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
 }
 
 h2 {
@@ -63,10 +78,17 @@ h2>span {
     margin-left: 0.5rem;
 }
 
+.admin-btn.active{
+    background-color: var(--accent);
+    color: var(--bg);
+    font-weight: 600;
+}
+
 .signout-btn:hover,
 .admin-btn:hover {
     background: var(--accent);
-    color: var(--text);
+    color: var(--bg);
+    font-weight: 600;
 }
 
 @media (max-width: 600px) {
