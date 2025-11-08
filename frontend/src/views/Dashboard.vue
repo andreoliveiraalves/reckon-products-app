@@ -1,12 +1,13 @@
 <template>
     <div class="dashboard">
         <!-- Header Component -->
-        <DashboardHeader @signOut="handleSignOut" />
+        <DashboardHeader @signOut="handleSignOut" @displayAdminSettings="toggleAdminButtons" />
 
         <!-- Main content -->
         <main class="dashboard-content">
             <p>Welcome back, {{ username }}!</p>
             <p>Here will be your main app interface (e.g., product management, charts, etc).</p>
+            <p>{{ showAdminButtons }}</p>
         </main>
     </div>
 </template>
@@ -20,7 +21,20 @@ export default {
 
     data() {
         return {
-            username: 'User'
+            username: 'User',
+            showAdminButtons: false,
+            products: [],
+            productSearchQuery: {
+                page: 1,
+                limit: 20,
+                id: "",
+                name: "",
+                description: "",
+                minPrice: "",
+                maxPrice: "",
+                sortBy: "createdAt",
+                sortOrder: "desc"
+            }
         }
     },
 
@@ -35,6 +49,9 @@ export default {
             localStorage.removeItem('token')
             localStorage.removeItem('username')
             this.$router.push('/login')
+        },
+        toggleAdminButtons() {
+            this.showAdminButtons = !this.showAdminButtons
         }
     }
 }
@@ -56,5 +73,4 @@ export default {
     flex: 1;
     padding: 2rem;
 }
-
 </style>

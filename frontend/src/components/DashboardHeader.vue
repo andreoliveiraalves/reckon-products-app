@@ -1,7 +1,7 @@
 <template>
     <header class="dashboard-header">
         <div class="heading-container">
-        <h2><span>🚀</span> Dashboard</h2>
+        <h2><span>🚀</span> Reckon Products Dashboard</h2>
         </div>
         <div class="button-container">
             <button class="admin-btn" @click="$emit('displayAdminSettings')" aria-label="Sign out">
