@@ -1,3 +1,165 @@
+## 🚀 Deploy
+
+O frontend está alojado em **Netlify** e pode ser acedido aqui:
+
+🔗 [https://reckon-products.netlify.app](https://reckon-products.netlify.app)
+
+O backend está alojado em **Render** e pode ser acedido aqui:
+
+🔗 [https://reckon-products-app.onrender.com](https://reckon-products-app.onrender.com)  
+📘 Documentação Swagger: [https://reckon-products-app.onrender.com/api-docs](https://reckon-products-app.onrender.com/api-docs)  
+⏰ Cron job para manter a API online: [https://uptimerobot.com/](https://uptimerobot.com/)
+
+---
+
+# 🎨 Reckon Products App - Frontend
+
+Este repositório contém o **frontend** da aplicação Reckon Products, desenvolvido com **Vue 3 + Vite**, utilizando componentes reutilizáveis, autenticação JWT e integração com a API backend.
+
+---
+
+## 📋 Pré-requisitos
+
+- Node.js >= 18
+- npm ou yarn
+- Backend da aplicação Reckon Products em execução (URL padrão: `https://reckon-products-app.onrender.com`)
+
+---
+
+## ⚙️ Instalação e Execução
+
+### 1️⃣ Instalar dependências
+
+```bash
+npm install
+# ou
+yarn
+```
+
+### 2️⃣ Executar a aplicação em modo desenvolvimento
+
+```bash
+npm run dev
+# ou
+yarn dev
+```
+
+A aplicação estará disponível em `http://localhost:5173` por padrão.
+
+---
+
+## 🏗️ Estrutura do Projeto
+
+```
+src/
+│
+├─ assets/          # Imagens, ícones e arquivos estáticos
+├─ components/      # Componentes reutilizáveis (FormModal, DashboardHeader, AuthForm, etc)
+├─ views/           # Páginas principais (Login, Register, Dashboard)
+├─ router/          # Rotas da aplicação
+│   └─ index.js
+├─ App.vue          # Componente raiz
+└─ main.js          # Ponto de entrada da aplicação
+```
+
+---
+
+## 🧭 Rotas e Navegação
+
+O projeto utiliza **Vue Router** com histórico HTML5 (`createWebHistory`).
+
+### Rotas principais
+
+| Rota         | Componente       | Descrição                                  |
+| ------------ | ---------------- | ------------------------------------------ |
+| `/login`     | `LoginView`      | Página de login                            |
+| `/register`  | `RegisterView`   | Página de registo de utilizador            |
+| `/dashboard` | `DashboardView`  | Dashboard principal da aplicação           |
+| `*`          | Redireciona      | Redireciona para `/login` em rotas inválidas |
+
+### Router Guard
+
+- Controla acesso baseado na autenticação (**JWT** no `localStorage` e `sessionStorage`).
+- Utilizadores não autenticados são redirecionados para `/login`.
+- Utilizadores autenticados não podem aceder `/login` ou `/register`.
+
+---
+
+## 🧩 Componentes Principais
+
+- **DashboardHeader**: Cabeçalho do dashboard com botões de admin e logout.
+- **DashboardButtons**: Botões de ação do dashboard (adicionar, gerar, filtrar ou remover produtos).
+- **DashboardTable**: Tabela paginada com produtos, suportando pesquisa, filtro e ordenação.
+- **FormModal**: Modal reutilizável para ações CRUD (adicionar, editar, deletar, gerar produtos ou filtrar preços).
+- **AuthForm**: Formulário reutilizável para login e registo.
+
+---
+
+## ✨ Funcionalidades
+
+### 1. Dashboard
+
+- Visualização paginada de produtos.
+- Pesquisa por nome e descrição.
+- Ordenação por preço (asc/desc).
+- Filtragem por intervalo de preço.
+- Criação, edição e remoção de produtos.
+- Geração de produtos de teste.
+- Confirmação antes de ações destrutivas (delete all / delete single).
+
+### 2. Autenticação
+
+- Login e registo via formulário.
+- Validação JWT com backend.
+- Guardas de rota para proteger páginas privadas.
+- Logout limpa `sessionStorage` e `localStorage`.
+
+### 3. API Integration
+
+- `fetch` usado para todas as requisições (`POST`, `PATCH`, `DELETE`, `GET`).
+- Token JWT incluído nos headers.
+
+---
+
+## 🔐 Autenticação
+
+- Token JWT é armazenado em `localStorage`.
+- `sessionStorage` mantém estado da autenticação em sessão.
+- **Rotas públicas**: `Login`, `Register`.
+- **Rotas protegidas**: `Dashboard`.
+
+### Exemplo de validação
+
+```javascript
+const token = localStorage.getItem('token')
+fetch('https://reckon-products-app.onrender.com/auth/validate', {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` }
+})
+```
+
+---
+
+## 🎨 Estilo e Tema
+
+- Tema escuro por padrão.
+- Variáveis CSS definidas no `:root` em `App.vue`.
+- Responsivo para dispositivos móveis (`max-width: 600px`).
+- Fontes: `'Roboto', sans-serif`.
+
+### Exemplo de variáveis
+
+```css
+:root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --accent: #38bdf8;
+    --text: #f1f5f9;
+    --input: #334155;
+    --input-focus: #475569;   
+}
+```
+
 # 🧾 Reckon Products App — Backend
 
 Este é o **backend** da aplicação **Reckon Products**, uma API RESTful desenvolvida em **Node.js + Express** com base de dados **MongoDB**, que permite a gestão de utilizadores e produtos, incluindo histórico de preços e autenticação JWT.
@@ -40,16 +202,6 @@ backend/
 - **cookie-parser**, **jsonwebtoken**, **bcryptjs**
 - **Joi** (validação de dados)
 - **cors**
-
----
-
-## 🚀 Deploy
-
-O backend está alojado em **Render** e pode ser acedido aqui:
-
-🔗 [https://reckon-products-app.onrender.com](https://reckon-products-app.onrender.com)  
-📘 Documentação Swagger: [https://reckon-products-app.onrender.com/api-docs](https://reckon-products-app.onrender.com/api-docs)
-⏰ Cron job para manter a API online: [https://uptimerobot.com/](https://uptimerobot.com/)
 
 ---
 
