@@ -301,7 +301,7 @@ export default {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.edit-btn:hover {
+.info-btn:hover, .edit-btn:hover {
     background: var(--accent);
 }
 

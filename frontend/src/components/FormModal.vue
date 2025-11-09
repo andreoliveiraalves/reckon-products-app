@@ -1,48 +1,84 @@
 <template>
-    <div v-if="show" class="modal-backdrop" @click.self="handleClose" @keydown.esc="handleClose" role="dialog" aria-modal="true" :aria-labelledby="'modal-title-' + type">
+    <div v-if="show" class="modal-backdrop" @click.self="handleClose" @keydown.esc="handleClose" role="dialog"
+        aria-modal="true" :aria-labelledby="'modal-title-' + type">
         <div class="modal-card">
             <h2 :id="'modal-title-' + type">{{ title }}</h2>
+            <p class="info" v-if="info">{{ info }}</p>
 
             <form v-if="!apiResponse.success" @submit.prevent="handleSubmit" class="modal-form" aria-label="Modal form">
                 <div v-if="type === 'numeric'">
                     <label for="count-input" class="sr-only">Number of products to generate</label>
-                    <input id="count-input" type="number" v-model.number="form.count" placeholder="Enter number" min="1" required aria-required="true"/>
+                    <input id="count-input" type="number" v-model.number="form.count" placeholder="Enter number" min="1"
+                        required aria-required="true" />
                 </div>
 
                 <div v-else-if="type === 'product'">
                     <label for="product-name" class="sr-only">Product name</label>
-                    <input id="product-name" type="text" v-model="form.name" placeholder="Product name" required aria-required="true"/>
-                    
+                    <input id="product-name" type="text" v-model="form.name" placeholder="Product name" required
+                        aria-required="true" />
+
                     <label for="product-description" class="sr-only">Product description</label>
-                    <input id="product-description" type="text" v-model="form.description" placeholder="Description" required aria-required="true"/>
-                    
+                    <input id="product-description" type="text" v-model="form.description" placeholder="Description"
+                        required aria-required="true" />
+
                     <label for="product-price" class="sr-only">Product price</label>
-                    <input id="product-price" type="number" v-model.number="form.price" placeholder="Price (€)" min="0" step="0.01" required aria-required="true"/>
+                    <input id="product-price" type="number" v-model.number="form.price" placeholder="Price (€)" min="0"
+                        step="0.01" required aria-required="true" />
                 </div>
 
                 <div v-else-if="type === 'price'">
                     <label for="min-price" class="sr-only">Minimum price filter</label>
-                    <input id="min-price" type="number" v-model.number="form.minPrice" placeholder="Min price (€)" min="0"/>
-                    
+                    <input id="min-price" type="number" v-model.number="form.minPrice" placeholder="Min price (€)"
+                        min="0" />
+
                     <label for="max-price" class="sr-only">Maximum price filter</label>
-                    <input id="max-price" type="number" v-model.number="form.maxPrice" placeholder="Max price (€)" min="0"/>
+                    <input id="max-price" type="number" v-model.number="form.maxPrice" placeholder="Max price (€)"
+                        min="0" />
                 </div>
 
                 <div v-else-if="type === 'confirm'" role="alert" aria-live="polite">
                     <p>⚠️ This action cannot be undone. Continue?</p>
                 </div>
 
-                <div class="modal-actions">
-                    <button class="submit-btn" type="submit" :disabled="apiResponse.loading" :aria-busy="apiResponse.loading">
+                <div v-else-if="type === 'info'" class="info-section">
+                    <p><strong>ID:</strong> <span class="highlight-text">{{ productDetails?._id }}</span></p>
+                    <p><strong>Name:</strong> {{ productDetails?.name }}</p>
+                    <p><strong>Description:</strong> {{ productDetails?.description }}</p>
+                    <p><strong>Price:</strong> €{{ productDetails?.price }}</p>
+                    <p><strong>Created by:</strong> {{ productDetails?._createdBy }}</p>
+                    <p><strong>Updated by:</strong> {{ productDetails?._updatedBy || '—' }}</p>
+                    <p><strong>Created at:</strong> {{ formatDate(productDetails?.createdAt) }}</p>
+                    <p><strong>Updated at:</strong> {{ formatDate(productDetails?.updatedAt) }}</p>
+
+                    <div v-if="productDetails?.priceHistory?.length" class="price-history">
+                        <h3>💹 Price History</h3>
+                        <ul>
+                            <li v-for="(entry, index) in productDetails.priceHistory" :key="index">
+                                <span>€{{ entry.price }}</span> —
+                                <small>{{ formatDate(entry.date) }}</small> by <strong>{{ entry.updatedBy }}</strong>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div v-if="productDetails" class="modal-actions">
+                    <button class="cancel-btn" type="button" @click="handleClose" :disabled="apiResponse.loading"
+                        aria-label="Cancel and close modal">Close</button>
+                </div>
+                <div v-else class="modal-actions">
+                    <button class="submit-btn" type="submit" :disabled="apiResponse.loading"
+                        :aria-busy="apiResponse.loading">
                         {{ apiResponse.loading ? 'Processing...' : action }}
                     </button>
-                    <button class="cancel-btn" type="button" @click="handleClose" :disabled="apiResponse.loading" aria-label="Cancel and close modal">Cancel</button>
+                    <button class="cancel-btn" type="button" @click="handleClose" :disabled="apiResponse.loading"
+                        aria-label="Cancel and close modal">Cancel</button>
                 </div>
             </form>
 
             <div v-if="apiResponse.error" role="alert" aria-live="assertive">
                 <div class="error">{{ apiResponse.error }}</div>
-                <button class="close-btn" type="button" @click="handleClose" aria-label="Close error message and return to form">Close</button>
+                <button class="close-btn" type="button" @click="handleClose"
+                    aria-label="Close error message and return to form">Close</button>
             </div>
 
             <div v-if="apiResponse.success" role="status" aria-live="polite">
@@ -61,6 +97,8 @@ export default {
         title: { type: String, default: 'Modal Title' },
         type: { type: String, default: 'default' },
         action: { type: String, default: 'Submit' },
+        info: { type: String, default: "" },
+        productDetails: { type: Object, default: null },
         apiResponse: { type: Object, default: () => ({ loading: false, error: '', success: '' }) }
     },
     data() {
@@ -79,9 +117,9 @@ export default {
         handleSubmit() {
             if (this.apiResponse.loading) return
             let payload = {}
-            switch(this.type) {
-                case 'numeric': if(!this.form.count || this.form.count < 1) return; payload = { count: this.form.count }; break
-                case 'product': if(!this.form.name || !this.form.description || this.form.price <= 0) return; payload = { name: this.form.name, description: this.form.description, price: this.form.price }; break
+            switch (this.type) {
+                case 'numeric': if (!this.form.count || this.form.count < 1) return; payload = { count: this.form.count }; break
+                case 'product': if (!this.form.name || !this.form.description || this.form.price <= 0) return; payload = { name: this.form.name, description: this.form.description, price: this.form.price }; break
                 case 'price': payload = { minPrice: this.form.minPrice, maxPrice: this.form.maxPrice }; break
                 case 'confirm': payload = { confirmed: true }; break
             }
@@ -90,6 +128,13 @@ export default {
         handleClose() {
             if (this.apiResponse.loading) return
             this.$emit('close')
+        },
+        formatDate(date) {
+            if (!date) return '—'
+            return new Date(date).toLocaleString('pt-PT', {
+                dateStyle: 'short',
+                timeStyle: 'short'
+            })
         }
     }
 }
@@ -138,7 +183,8 @@ export default {
 }
 
 .submit-btn,
-.cancel-btn, .close-btn {
+.cancel-btn,
+.close-btn {
     flex: 1;
     margin: 0 0.3rem;
     padding: 0.6rem 1rem;
@@ -238,9 +284,10 @@ export default {
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
 }
+
 .loader::after,
 .loader::before {
-    content: '';  
+    content: '';
     box-sizing: border-box;
     position: absolute;
     left: 0;
@@ -251,6 +298,7 @@ export default {
     transform: translate(150%, 150%);
     border-radius: 50%;
 }
+
 .loader::before {
     left: auto;
     top: auto;
@@ -259,9 +307,22 @@ export default {
     transform: translate(-150%, -150%);
 }
 
+.info {
+    color: var(--accent);
+    font-weight: 600;
+    text-align: start;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
 @keyframes rotation {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .error {
@@ -276,5 +337,34 @@ export default {
     font-weight: 600;
     margin: auto;
     font-size: 1rem;
+}
+
+.info-section {
+    text-align: left;
+    padding: 1rem;
+    color: var(--text);
+    line-height: 1.6;
+}
+
+.info-section h3 {
+    margin-top: 1.5rem;
+    color: var(--accent);
+    font-size: 1rem;
+}
+
+.info-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.info-section li {
+    margin-bottom: 0.5rem;
+    background: var(--input);
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+}
+
+.highlight-text {
+    color: var(--accent)
 }
 </style>

@@ -15,8 +15,9 @@
                 @update-limit="val => { productSearchQuery.limit = val; fetchAllProducts() }" />
         </main>
 
-        <FormModal ref="formModal" :show="modal.show" :title="modal.title" :type="modal.type" :action="modal.action"
-            :apiResponse="apiResponse" @submit="handleModalSubmit" @close="closeModal" />
+        <FormModal ref="formModal" :show="modal.show" :title="modal.title" :info="modal.info" :type="modal.type"
+            :action="modal.action" :apiResponse="apiResponse" :productDetails="modal.productDetails"
+            @submit="handleModalSubmit" @close="closeModal" />
     </div>
 </template>
 
@@ -39,7 +40,9 @@ export default {
                 title: '',
                 type: 'default',
                 action: '',
-                productId: null
+                info: '',
+                productId: null,
+                productDetails: {}
             },
             apiResponse: {
                 loading: false,
@@ -101,7 +104,7 @@ export default {
         },
         openEditProductModal(product) {
             this.resetApiResponse()
-            this.modal = { title: `✏️ Edit product "${product.name}"`, type: 'product', action: 'Save', show: true, productId: product._id }
+            this.modal = { title: `✏️ Edit product`, info: product.name, type: 'product', action: 'Save', show: true, productId: product._id }
             this.$nextTick(() => {
                 const formModal = this.$refs.formModal
                 if (formModal) {
@@ -113,7 +116,7 @@ export default {
         },
         openDeleteProductModal(product) {
             this.resetApiResponse()
-            this.modal = { title: `🗑️ Delete product "${product.name}"?`, type: 'confirm', action: 'Delete', show: true, productId: product._id }
+            this.modal = { title: `🗑️ Delete product`, info: product.name, type: 'confirm', action: 'Delete', show: true, productId: product._id }
         },
 
         // --- Handle modal submit ---
@@ -168,7 +171,7 @@ export default {
             const token = localStorage.getItem('token')
             if (!token) throw new Error('Missing authentication token.')
             const res = await fetch(`https://reckon-products-app.onrender.com/products/${id}`, {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(payload)
             })
@@ -250,7 +253,17 @@ export default {
 
         handleSearch(filters) { this.productSearchQuery.name = filters.name; this.productSearchQuery.description = filters.description; this.productSearchQuery.page = 1; this.fetchAllProducts() },
         handleSort({ sortBy, sortOrder }) { this.productSearchQuery.sortBy = sortBy; this.productSearchQuery.sortOrder = sortOrder; this.fetchAllProducts() },
-        handleProductInfo(product) { console.log('View product:', product) },
+        handleProductInfo(product) {
+            this.resetApiResponse()
+            this.modal = {
+                title: 'ℹ️ Product details',
+                type: 'info',
+                action: 'Close',
+                show: true,
+                productId: product._id,
+            }
+            this.modal.productDetails = product
+        },
         handlePrevPage() { if (this.productSearchQuery.page > 1) { this.productSearchQuery.page--; this.fetchAllProducts() } },
         handleNextPage() { if (this.hasMorePages) { this.productSearchQuery.page++; this.fetchAllProducts() } }
     },
