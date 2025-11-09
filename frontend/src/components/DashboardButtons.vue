@@ -79,7 +79,8 @@ export default {
     .dashboard-header {
         flex-direction: column;
         justify-content: space-between;
-        padding: 1rem;
+        padding: 1.2rem;
+        max-width: 94vw;
     }
 
     .dashboard-options-container {

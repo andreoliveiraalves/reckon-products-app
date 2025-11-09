@@ -92,16 +92,16 @@ h2>span {
 }
 
 @media (max-width: 600px) {
-    h2>span {
-        margin-right: 0.5rem;
-    }
 
     .dashboard-header{
         flex-direction: column;
         justify-content: space-between;
-        padding: 1.2rem;
     }
 
+
+    h2>span {
+        margin-right: 0.5rem;
+    }
     .heading-container{
         display: flex;
         justify-content: space-between;
